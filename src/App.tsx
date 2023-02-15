@@ -1,32 +1,46 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const webhookUrl = import.meta.env.VITE_DISCORD_HOOK;
 function App() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
+    } else {
+      setFile(null);
     }
   };
   const onMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   };
 
+  const reset = () => {
+    setMessage("");
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append("file", file!);
     formData.append("username", getRandomFunnyName());
     formData.append("content", message);
-
-    fetch(webhookUrl, {
-      method: "POST",
-      body: formData,
-    }).catch((error) => {
-      console.error(error);
-    });
+    try {
+      await fetch(webhookUrl, {
+        method: "POST",
+        body: formData,
+      });
+      alert("Message envoyé");
+      reset();
+    } catch (error) {
+      alert("Erreur lors de l'envoi du message");
+      console.log(error);
+    }
   };
   return (
     <div className="flex items-center justify-center h-screen">
@@ -46,12 +60,13 @@ function App() {
           Upload a fichier
         </label>
         <input
+          ref={fileInputRef}
           className="block w-full text-sm border  rounded-lg cursor-pointe text-gray-400 focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
           id="file_input"
           type="file"
           onChange={onFileChange}
         />
-
+        {file && <p>Fichier sélectionné: {file.name}</p>}
         <button className="py-2 px-4 bg-emerald-500 rounded-md">Envoyé</button>
       </form>
     </div>
