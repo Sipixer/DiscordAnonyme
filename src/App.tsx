@@ -16,22 +16,17 @@ function App() {
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(webhookUrl);
     const formData = new FormData();
     formData.append("file", file!);
     formData.append("username", getRandomFunnyName());
     formData.append("content", message);
+
     fetch(webhookUrl, {
       method: "POST",
       body: formData,
-    })
-      .then((response) => {
-        toast.success("Message envoyé");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    }).catch((error) => {
+      console.error(error);
+    });
   };
   return (
     <div className="flex items-center justify-center h-screen">
