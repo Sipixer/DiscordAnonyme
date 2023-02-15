@@ -17,6 +17,7 @@ function App() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(webhookUrl);
     const formData = new FormData();
     formData.append("file", file!);
     formData.append("username", getRandomFunnyName());
