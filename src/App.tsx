@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const webhookUrl =
-  "https://discord.com/api/webhooks/1075509858624876644/yMaxDYDde4oXxw2_z1tm93dP8kgg3yb2OAMkA9aCrkHofpnroLDj9JPK8_4EH-bWJ4fC";
+const webhookUrl = import.meta.env.VITE_DISCORD_HOOK;
 function App() {
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
